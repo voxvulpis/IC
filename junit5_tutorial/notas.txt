@@ -1,0 +1,8 @@
+Código dessenvolvido em Java 21 (jdk openjdk@21.0.2)
+
+//TODO
+
+Geração de testes feita por click de botão direito no nome da classe -> Go to Tests
+Geração de testes em life cycle, botão direito -> Source Action -> Generate Tests
+
+Executar testes, Menu Lateral "Testing"
