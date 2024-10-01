@@ -1,8 +1,25 @@
 Código dessenvolvido em Java 21 (jdk openjdk@21.0.2)
 
-//TODO
+Preparação
+    Instalação de Extenções
+        Extension Pack for Java (autor: vscjava)
+        Error Lens
 
-Geração de testes feita por click de botão direito no nome da classe -> Go to Tests
-Geração de testes em life cycle, botão direito -> Source Action -> Generate Tests
+Inicialização de projeto
+    Ctrl+Shift+P (Command Palett)
+        "Java: Create Java Project"
+            Maven
+            No Archtype
+            [Group Id] (br.unesp)
+            [Artifact Name] (Nome do Projeto)
+
+Geração de dependências
+    Command Palett
+        "Maven: Add a dependency"
+            [Artifact Id] (ex.:junit-platform-suite)
+
+Geração de Testes
+    Geração de testes feita por click de botão direito no nome da classe -> Go to Tests
+    Geração de testes em life cycle, botão direito -> Source Action -> Generate Tests
 
 Executar testes, Menu Lateral "Testing"
