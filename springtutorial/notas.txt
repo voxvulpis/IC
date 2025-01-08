@@ -1,0 +1,2 @@
+application.properties now in 'resources'
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
