@@ -1,0 +1,248 @@
+https://quarkus.io/guides/getting-started
+https://quarkus.io/guides/cdi
+
+
+//Creating Project
+1.Bootstrap
+
+$mvn io.quarkus.platform:quarkus-maven-plugin:3.17.5:create \
+$    -DprojectGroupId=br.unesp \
+$    -DprojectArtifactId=quarkus-application \
+$    -Dextensions='rest'
+$ cd quarkus-application
+
+2. Start
+/*
+"quarkus:dev runs Quarkus in development mode. This enables live reload with background compilation, which means that when you modify your Java files 
+and/or your resource files and refresh your browser, these changes will automatically take effect."
+*/
+
+$./mvnw quarkus:dev
+
+3. Test
+
+$curl -w "\n" http://localhost:8080/hello
+Response: Hello from Quarkus REST
+
+
+//Using Injection
+//https://quarkus.io/guides/cdi
+1.Create src/main/java/br/unesp/GreetingService.java
+
+package br.unesp;
+
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class GreetingService {
+
+    public String greeting(String name) {
+        return "hello " + name;
+    }
+
+}
+
+
+2.Edit GreetingService.java
+
+package br.unesp;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+
+@Path("/hello")
+public class GreetingResource {
+
+    @Inject
+    GreetingService service;
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String hello() {
+        return "Hello from Quarkus REST";
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("/greeting/{name}")
+    public String greeting(String name) {
+        return service.greeting(name);
+    }
+}
+
+3.Test
+
+$ curl -w "\n" http://localhost:8080/hello/greeting/aluno
+Response: hello aluno
+
+//Vector.java
+package br.unesp;
+
+import jakarta.enterprise.context.ApplicationScoped;
+
+//Anotação Permite Injeção no escopo do projeto
+@ApplicationScoped
+public class Vector {
+    private Vector(){
+
+    }
+    
+    public boolean equal(int a[], int b[]){
+        if((a == null) || (b == null)){
+            throw new IllegalArgumentException("null argument");
+        }
+
+        if(a.length != b.length){
+            return false;
+        }
+
+        for(int i = 0; i < a.length; i++){
+            if(a[i] != b[i]){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean size(int a, int b){
+        if ((a < 0) || (b < 0)) {
+            throw new IllegalArgumentException("Valores negativos não são permitidos!");
+        }
+
+        return a==b;
+    }
+}
+
+
+
+//Tests
+1. Maven Surefire Plugin
+//Nota: Há de se reparar uma facilidade maior em criar e editar o projeto, quando se comparado ao framework do Spring.
+
+//O projeto é criado já com as dependências do JUnit5 e RestAssured que serão utilizadas para testes.
+
+//"in the case of Maven, the version of the Surefire Maven Plugin must be set, as the default version does not support JUnit 5"
+
+//"We also set the java.util.logging system property to make sure tests will use the correct log manager and maven.home to 
+//ensure that custom configuration from ${maven.home}/conf/settings.xml is applied (if any)."
+
+2a. Edit src/test/java/br/unesp/GreetingResourceTest.java
+
+package br.unesp;
+
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+
+@QuarkusTest
+public class GreetingResourceTest {
+
+    @Test
+    public void testHelloEndpoint() {
+        given()
+          .when().get("/hello")
+          .then()
+             .statusCode(200)
+             .body(is("Hello from Quarkus REST"));
+    }
+
+    @Test
+    public void testGreetingEndpoint() {
+        String uuid = UUID.randomUUID().toString();
+        given()
+          .pathParam("name", uuid)
+          .when().get("/hello/greeting/{name}")
+          .then()
+            .statusCode(200)
+            .body(is("hello " + uuid));
+    }
+
+}
+
+2b. Edit src/test/java/br/unesp/VectorResourceTest.java
+package br.unesp;
+
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.Test;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
+
+@QuarkusTest
+public class VectorResourceTest {
+    @Test
+    void testVectorEndpoint(){
+        given()
+            .when().get("/vector")
+            .then()
+                .statusCode(200)
+                .body(is("Vector Resource"));
+    }
+
+    @Test
+    public void testVectorSize() {
+        int vecA[] = {1, 5, 6};
+        int vecB[] = {1, 5, 6};
+        given()
+          .pathParam("a", String.valueOf(vecA.length))
+          .pathParam("b", String.valueOf(vecB.length))
+          .when().get("/vector/size/{a}/{b}")
+          .then()
+            .statusCode(200)
+            .body(is("true"));
+    }
+
+}
+
+3. Run Tests
+//Suite de testes aparentemente não está funcionando no JUnit5-Quarkus
+
+$./mvnw test
+
+
+//Packaging
+$./mvnw install
+
+
+
+
+
+
+//----------------------------------------Spring/Quarkus ??
+
+1.Dependências
+//lombok
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.36</version>
+</dependency>
+
+//configuração do plugin 
+//https://stackoverflow.com/questions/71697275/lombok-doest-not-work-in-quarkus-extension
+<plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>${compiler-plugin.version}</version>
+    <configuration>
+        <annotationProcessorPaths>
+            <path>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+            </path>
+            <path>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-extension-processor</artifactId>
+            <version>${quarkus.version}</version>
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
