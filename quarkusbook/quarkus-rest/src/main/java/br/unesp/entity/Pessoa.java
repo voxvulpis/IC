@@ -46,9 +46,13 @@ public class Pessoa extends PanacheEntityBase implements Serializable{
         this.endereco = new ArrayList<>();
     }
 
-    public void setEndereco(Endereco endereco){
-        this.endereco.add(endereco);
-    }
+    // public void setEndereco(Endereco endereco){
+    //     this.endereco.add(endereco);
+    // }
+
+    // public void setEndereco(List<Endereco> endereco){
+    //     this.endereco = endereco;
+    // }
 
     public void setIdPessoa(){
     }
