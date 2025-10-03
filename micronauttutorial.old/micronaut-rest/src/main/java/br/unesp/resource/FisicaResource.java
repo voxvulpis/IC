@@ -23,47 +23,46 @@ public class FisicaResource {
 
     @GET
     @Transactional
-    public List<Fisica> getAll(){
-        return Fisica.listAll();
+    public List<Fisica> getAll() {
+        return fisicaRepository.findAll();
     }
 
     @POST
-    @Transactional()
-    public Response create(Fisica item){
+    @Transactional
+    public Response create(Fisica item) {
         item.setIdPessoa();
         System.out.println("------------------------------------------------------------------");
         System.out.println(item);
         System.out.println("------------------------------------------------------------------");
-        item.persist();
+        fisicaRepository.save(item);
         return Response.status(Status.CREATED).entity(item).build();
     }
 
     @PATCH
     @Path("/{id}")
     @Transactional
-    public Response update(Fisica item, @PathParam("id") Long id){
-        Fisica entity = Fisica.findById(id);
+    public Response update(Fisica item, @PathParam("id") Long id) {
+        Fisica entity = fisicaRepository.findById(id).get();
         entity.setIdPessoa(item.getIdPessoa());
 
         entity.setCpf(item.getCpf());
         entity.setDataNascimento(item.getDataNascimento());
 
         entity.setNome(item.getNome());
-        entity.setAcesso(item.getAcesso());
+        // entity.setAcesso(item.getAcesso());
 
         return Response.ok(entity).build();
     }
-
+    
     @DELETE
     @Path("/{id}")
     @Transactional
     public Response deleteOne(@PathParam("id") Long id){
-        Fisica entity = Fisica.findById(id);
+        Fisica entity = fisicaRepository.findById(id).get();
         if(entity == null) throw new WebApplicationException("Pessoa Fisica nao existe", Status.NOT_FOUND);
 
-        entity.delete();
+        fisicaRepository.delete(entity);
 
         return Response.noContent().build();
     }
-
 }

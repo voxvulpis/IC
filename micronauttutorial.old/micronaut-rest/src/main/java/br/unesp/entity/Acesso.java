@@ -1,10 +1,8 @@
 package br.unesp.entity;
 
-import java.io.Serializable;
-
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.micronaut.data.annotation.Embeddable;
+import io.micronaut.serde.annotation.Serdeable;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +13,8 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class Acesso extends PanacheEntityBase implements Serializable{
-    private static final long serialVersionUID = 1L;
+@Serdeable
+public class Acesso {
     @Column(name = "acesso_usuario")
     private String usuario;
     @Column(name = "acesso_senha")

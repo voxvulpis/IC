@@ -1,0 +1,1 @@
+INSERT INTO acesso(usuario, senha) VALUES ('user1', 'psw1');

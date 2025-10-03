@@ -1,0 +1,33 @@
+DROP TABLE IF EXISTS pessoa;
+CREATE TABLE pessoa (
+   idPessoa BIGINT NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+   nome VARCHAR(255) NOT NULL
+);
+
+
+DROP TABLE IF EXISTS acesso;
+CREATE TABLE acesso (
+   usuario  VARCHAR(255) NOT NULL UNIQUE PRIMARY KEY,
+   senha    VARCHAR(255) NOT NULL
+
+);
+
+DROP TABLE IF EXISTS endereco;
+CREATE TABLE endereco (
+   idEndereco BIGINT NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+   rua VARCHAR(255),
+   numero INT, 
+   bairro VARCHAR(255),
+   cep VARCHAR(255),
+   cidade VARCHAR(255),
+   estado VARCHAR(255)
+);
+
+DROP TABLE IF EXISTS contato;
+CREATE TABLE contato (
+   idContato BIGINT NOT NULL AUTO_INCREMENT UNIQUE PRIMARY KEY,
+   telefoneResidencial VARCHAR(255),
+   telefoneComercial VARCHAR(255),
+   celular VARCHAR(255),
+   email VARCHAR(255)
+);

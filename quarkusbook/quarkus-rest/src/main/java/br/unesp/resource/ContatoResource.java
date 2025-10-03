@@ -35,12 +35,6 @@ public class ContatoResource {
         return Response.status(Status.CREATED).entity(item).build();
     }
 
-    // public Response createInternal(Contato item){
-    //     item.setIdContato();
-    //     item.persist();
-    //     return Response.status(Status.CREATED).entity(item).build();
-    // }
-
     @PATCH
     @Path("/{id}")
     public Response update(Contato item, @PathParam("id") Long id){
